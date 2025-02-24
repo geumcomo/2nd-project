@@ -561,9 +561,9 @@
 							</c:if>
 						</c:forEach>
 						<div class="review-header">
-							<h1 style="margin-top: 10px;">상품후기</h1>
-							<span class="align" style=" margin-right:480px; margin-top: 10px; font-size:15px;">
-								<button class="best" onclick="bestList()">베스트순</button>
+							<h1 style="margin-top: 10px; width:150px;">상품후기</h1>
+							<span class="align" style=" margin-right:480px; margin-top: 10px; font-size:15px;width:300px;">
+								<button class="best" onclick="bestList()">조회수 높은 순</button>
 								<label>|</label>
 								<button class="recent" onclick="recentList()">최신순</button>
 							</span>
