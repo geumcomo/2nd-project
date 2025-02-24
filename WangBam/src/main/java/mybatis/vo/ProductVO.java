@@ -10,11 +10,29 @@ public class ProductVO {
 	pd_date,
 	pd_cnt,
 	pd_thumbnail_img,
+	pd_thumbnail_path,
 	pd_detail_img,
+	pd_detail_path,
 	pd_last_update,
 	pd_status;
 	private CategoryVO cvo;
-	
+
+	public String getPd_thumbnail_path() {
+		return pd_thumbnail_path;
+	}
+
+	public void setPd_thumbnail_path(String pd_thumbnail_path) {
+		this.pd_thumbnail_path = pd_thumbnail_path;
+	}
+
+	public String getPd_detail_path() {
+		return pd_detail_path;
+	}
+
+	public void setPd_detail_path(String pd_detail_path) {
+		this.pd_detail_path = pd_detail_path;
+	}
+
 	public String getPd_idx() {
 		return pd_idx;
 	}
