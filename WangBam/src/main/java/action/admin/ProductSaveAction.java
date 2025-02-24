@@ -23,47 +23,54 @@ public class ProductSaveAction implements Action {
 		if (enc_type == null) {
 			viewPath = "/jsp/admin/productAdd.jsp";
 		} else if (enc_type.startsWith("multipart")) {
-			// 파일첨부가 된 상태에서 현재 객체가 불려진 경우
-			// 폼에 enctype이 multipart....로 지정되었다면
-			// 절대로 request.getParameter()로 값을 받지 못한다.
 			try {
-				// 첨부파일과 다른 파라미터들을 받기 위해
-				// MultipartRequest 객체를 생
+				// 1. 파일 저장 경로 설정
 				ServletContext application = request.getServletContext();
-				String imgPath = application.getRealPath("/img");
-				
+				String uploadDir = "/img"; // 웹에서 접근할 상대 경로
+				String imgPath = application.getRealPath(uploadDir); // 실제 서버 저장 경로
+
+				// 업로드 디렉토리가 없으면 생성
+				File dir = new File(imgPath);
+				if (!dir.exists()) dir.mkdirs();
+
+				// 2. MultipartRequest 생성
 				MultipartRequest mr = new MultipartRequest(request, imgPath, 5 * 1024 * 1024, "utf-8",
 						new DefaultFileRenamePolicy());
-				// 이떄 이미 첨부파일은 upload라는 폴더에 저장된 상태다.
-				// 나머지 파라미터 값들 받기
+
+				// 3. 폼에서 입력받은 데이터 가져오기
 				String pd_name = mr.getParameter("pd_name");
 				String ct_idx = mr.getParameter("ct_idx");
 				String pd_cnt = mr.getParameter("pd_cnt");
 				String pd_sale = mr.getParameter("pd_sale");
-				if(pd_sale.trim().length() < 1) {
+				if (pd_sale.trim().length() < 1) {
 					pd_sale = "0";
 				}
 				String pd_price = mr.getParameter("pd_price");
-				
-				// 이미 업로드된 첨부파일이 파일명이 변경됐을 것 같은 느낌.
-				  // 파일 객체 선언 및 초기화
-                File f = mr.getFile("pd_thumbnail_img");
-                File f2 = mr.getFile("pd_detail_img");
-                // 파일이 null일 경우 처리
-                String pd_thumbnail_img = (f != null) ? f.getName() : "";
-                String pd_detail_img = (f2 != null) ? f2.getName() : "";
 
+				// 4. 업로드된 파일 처리
+				File f = mr.getFile("pd_thumbnail_img");
+				File f2 = mr.getFile("pd_detail_img");
+
+				// 5. 파일 경로를 DB에 저장할 값으로 변환
+				String pd_thumbnail_path = (f != null) ? (uploadDir + "/" + f.getName()) : "";
+				String pd_detail_path = (f2 != null) ? (uploadDir + "/" + f2.getName()) : "";
+
+				// 6. HashMap에 데이터 저장
 				HashMap<String, String> map = new HashMap<>();
 				map.put("pd_name", pd_name);
 				map.put("ct_idx", ct_idx);
 				map.put("pd_cnt", pd_cnt);
 				map.put("pd_sale", pd_sale);
 				map.put("pd_price", pd_price);
-				map.put("pd_thumbnail_img", pd_thumbnail_img);
-				map.put("pd_detail_img", pd_detail_img);
+				map.put("pd_thumbnail_path", pd_thumbnail_path);
+				map.put("pd_thumbnail_img", f.getName());
+				map.put("pd_detail_path", pd_detail_path);
+				map.put("pd_detail_img", f2.getName());
 
+				// 7. DB 저장
 				ProductDAO.addProduct(map);
 
+				// 8. 다음 페이지로 이동
 				viewPath = "/jsp/admin/productSave.jsp";
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -72,5 +79,4 @@ public class ProductSaveAction implements Action {
 
 		return viewPath;
 	}
-
 }

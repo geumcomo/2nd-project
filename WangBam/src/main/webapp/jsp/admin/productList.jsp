@@ -41,14 +41,14 @@
 		<tr>
 			<td><input type="checkbox" class="checkbox" value="${product.pd_idx}"/></td>
 			<td>${vs.index + 1 + (paging.pagePerBlock * (paging.nowPage - 1))}</td>
-			<c:if test="${product.pd_thumbnail_img eq ''}">
+			<c:if test="${product.pd_thumbnail_path eq ''}">
 				<td><img
 					src="https://png.pngtree.com/png-vector/20190820/ourmid/pngtree-no-image-vector-illustration-isolated-png-image_1694547.jpg"
 					width="100" /></td>
 			</c:if>
-			<c:if test="${product.pd_thumbnail_img ne ''}">
+			<c:if test="${product.pd_thumbnail_path ne ''}">
 				<td><img
-					src="${pageContext.request.contextPath}/img/${product.pd_thumbnail_img}"
+					src="${pageContext.request.contextPath}${product.pd_thumbnail_path}"
 					width="100" /></td>
 			</c:if>
 			<td><a href="admin?type=productDetail&pd_idx=${product.pd_idx}">${product.pd_name}</a></td>
@@ -56,14 +56,14 @@
 			<td>${product.pd_sale_price}</td>
 			<td>${product.pd_sale }</td>
 			<td>${product.pd_cnt }</td>
-			<c:if test="${product.pd_detail_img eq ''}">
+			<c:if test="${product.pd_detail_path eq ''}">
 				<td><img
 					src="https://png.pngtree.com/png-vector/20190820/ourmid/pngtree-no-image-vector-illustration-isolated-png-image_1694547.jpg"
 					width="100" /></td>
 			</c:if>
-			<c:if test="${product.pd_detail_img ne ''}">
+			<c:if test="${product.pd_detail_path ne ''}">
 				<td><img
-					src="${pageContext.request.contextPath}/img/${product.pd_detail_img}"
+					src="${pageContext.request.contextPath}${product.pd_detail_path}"
 					width="100" /></td>
 			</c:if>
 			<td>${product.pd_date}</td>

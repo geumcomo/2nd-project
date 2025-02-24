@@ -25,7 +25,8 @@ public class ProductUpdateAction implements Action {
         } else if (enc_type.startsWith("multipart")) {
             try {
                 ServletContext application = request.getServletContext();
-                String imgPath = application.getRealPath("/img");
+                String uploadDir = "/img";
+                String imgPath = application.getRealPath(uploadDir);
                 MultipartRequest mr = new MultipartRequest(request, imgPath, 5 * 1024 * 1024, "utf-8",
                         new DefaultFileRenamePolicy());
 
@@ -61,14 +62,28 @@ public class ProductUpdateAction implements Action {
                 }
                 if (pd_thumbnail_img != null && !pd_thumbnail_img.isEmpty()) {
                     map.put("pd_thumbnail_img", pd_thumbnail_img);
+                    map.put("pd_thumbnail_path", uploadDir + "/" + pd_thumbnail_img);
                 }
                 if (pd_detail_img != null && !pd_detail_img.isEmpty()) {
                     map.put("pd_detail_img", pd_detail_img);
+                    map.put("pd_detail_path", uploadDir + "/" + pd_detail_img);
                 }
 
                 // 데이터베이스에 상품 정보 업데이트
                 int cnt = ProductDAO.updateProduct(map);
                 if (cnt > 0) {
+                    File imgPathFile = new File(imgPath);
+                    File[] files = imgPathFile.listFiles();
+                    for (File file : files) {
+                        if(!existingThumbnailImg.equals(pd_thumbnail_img)) {
+                            if (file.getName().equals(existingThumbnailImg))
+                                file.delete();
+                        }
+                        if(!existingDetailImg.equals(pd_detail_img)){
+                            if (file.getName().equals(existingDetailImg))
+                                file.delete();
+                        }
+                    }
                     request.setAttribute("updatemsg", "상품 정보가 성공적으로 업데이트되었습니다.");
                 } else {
                     request.setAttribute("updatemsg", "상품 정보 업데이트에 실패했습니다.");
